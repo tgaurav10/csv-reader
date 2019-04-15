@@ -1,0 +1,5 @@
+rootProject.name = 'uber-service'
+
+include 'uber-frontend-server'
+include 'uber-application-server'
+
