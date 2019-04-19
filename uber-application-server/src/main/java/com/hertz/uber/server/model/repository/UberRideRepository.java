@@ -5,4 +5,8 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface UberRideRepository extends CrudRepository<UberRide, Long> {
 
+    public UberRide findByUuid(String uuid);
+
+    public void deleteByUuid(String uuid);
+
 }

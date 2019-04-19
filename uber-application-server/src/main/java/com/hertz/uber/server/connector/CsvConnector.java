@@ -19,16 +19,20 @@ public class CsvConnector {
     @Autowired
     UberRideDAO dao;
 
-    public void readCsvFile(String filename) throws IOException {
+    public void readCsvFile(String filepath) throws IOException {
         List<List<String>> records = new ArrayList<List<String>>();
-        try (CSVReader csvReader = new CSVReader(new FileReader(filename))) {
+        try (CSVReader csvReader = new CSVReader(new FileReader(filepath))) {
             String[] values = null;
+            csvReader.readNext();   //skipping the header of the file
             while ((values = csvReader.readNext()) != null) {
                 records.add(Arrays.asList(values));
             }
             for(List<String> record : records) {
                 try {
                     UberRideDTO dto = new UberRideDTO(record);
+                    if(dao.findByUuid(dto.getUuid())!=null) {//found a duplicate
+                        continue;
+                    }
                     dao.saveUberRide(dto);
                 } catch (ParseException e) {
                     e.printStackTrace();

@@ -6,6 +6,9 @@ import com.hertz.uber.server.model.repository.UberRideRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class UberRideDAO {
 
@@ -14,6 +17,40 @@ public class UberRideDAO {
 
     public UberRideDTO saveUberRide(UberRideDTO dto) {
         UberRide entity = new UberRide();
+        populateEntityFromDTO(dto, entity);
+        return new UberRideDTO(repository.save(entity));
+    }
+
+    public List<UberRideDTO> findAll() {
+        Iterable<UberRide> results = repository.findAll();
+        List<UberRideDTO> dtos = new ArrayList<>();
+        for (UberRide result : results) {
+            dtos.add(new UberRideDTO(result));
+        }
+        return dtos;
+    }
+
+    public UberRideDTO findByUuid(String uuid) {
+        UberRide ride = repository.findByUuid(uuid);
+        if(ride==null) {
+            return null;
+        }
+        return new UberRideDTO(ride);
+    }
+
+    public UberRideDTO editUberRide(String uuid, UberRideDTO dto) {
+        UberRide entity = repository.findByUuid(uuid);
+        populateEntityFromDTO(dto, entity);
+        repository.deleteByUuid(uuid);
+        return new UberRideDTO(repository.save(entity));
+    }
+
+    public void deleteUberRide(String uuid) {
+        repository.deleteByUuid(uuid);
+    }
+
+    private void populateEntityFromDTO(UberRideDTO dto, UberRide entity) {
+        entity.setUuid(dto.getUuid());
         entity.setStartDateOfRide(dto.getStartDateOfRide());
         entity.setEndDateOfRide(dto.getEndDateOfRide());
         entity.setCategory(dto.getCategory());
@@ -21,8 +58,6 @@ public class UberRideDAO {
         entity.setDestination(dto.getDestination());
         entity.setMiles(dto.getMiles());
         entity.setPurpose(dto.getPurpose());
-        repository.save(entity);
-        return dto;
     }
 
 }

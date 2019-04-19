@@ -14,12 +14,12 @@ public class UberRide {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String uuid;
+
     @DateTimeFormat(pattern = DateConstants.HR_MIN_TIME_PATTERN)
-    @Temporal(TemporalType.DATE)
     private Date startDateOfRide;
 
     @DateTimeFormat(pattern = DateConstants.HR_MIN_TIME_PATTERN)
-    @Temporal(TemporalType.DATE)
     private Date endDateOfRide;
 
     private Category category;
@@ -86,5 +86,13 @@ public class UberRide {
 
     public void setPurpose(String purpose) {
         this.purpose = purpose;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }
