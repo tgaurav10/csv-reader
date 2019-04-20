@@ -1,16 +1,18 @@
 import React, {Component} from 'react';
 import axios from "axios";
 import './UberRide.css';
+import Pagination from "react-paginating";
 
 class UberRide extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {list: [], listChanged: false};
+        this.state = {list: [], listChanged: false, currentPage: 1};
         this.edit = this.editRow.bind(this);
         this.handleChange = this.handleChangeOnCell.bind(this);
         this.save = this.saveRow.bind(this);
         this.delete = this.deleteRow.bind(this);
+        this.handlePageChange = this.handlePageChange.bind(this);
     }
 
     componentDidMount() {
@@ -19,13 +21,14 @@ class UberRide extends Component {
             function (resp) {
                 let data = resp.data;
                 data.map(row => row['isEditing'] = false);
+                //console.log(data.length);
                 curr.setState({list: data});
             }).catch(
             function (error) {
                 console.log(error);
             }
         );
-        curr.state.pages = curr.state.list/25;
+        curr.state.pages = curr.state.list / 25;
     }
 
     editRow(event) {
@@ -87,70 +90,164 @@ class UberRide extends Component {
         );
     }
 
+    handlePageChange = (page, e) => {
+        this.setState({
+            currentPage: page
+        });
+    };
+
     header = ["Start Date", "End Date", "Category", "PickUp Point", "Destination", "Miles", "Purpose"];
 
     render() {
         if (this.state) {
+            const { currentPage } = this.state;
+            const  total  = this.state.list.length;
+            console.log(total);
+            const limit = 25;
+            let endIndex = currentPage * limit;
+            let beginIndex = (currentPage-1) * limit;
             return (
-                <table>
-                    <thead>
-                    <tr>
-                        {this.header.map((h, i) => <th key={i}>{h}</th>)}
-                        <th colSpan={2}>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        this.state.list.map((data, i) => {
-                                if (!data.isEditing) {
-                                    return (
-                                        <tr key={i}>
-                                            <td>{data.startDateOfRide}</td>
-                                            <td>{data.endDateOfRide}</td>
-                                            <td>{data.category}</td>
-                                            <td>{data.pickUpPoint}</td>
-                                            <td>{data.destination}</td>
-                                            <td>{data.miles}</td>
-                                            <td>{data.purpose}</td>
-                                            <td className="round">
-                                                <button onClick={this.edit} value={i}>Edit</button>
-                                            </td>
-                                            <td className="round">
-                                                <button onClick={this.delete} value={i}>Delete</button>
-                                            </td>
-                                        </tr>
-                                    )
-                                } else {
-                                    return (
-                                        <tr key={i}>
-                                            <td><input type="datetime-local" value={data.startDateOfRide}
-                                                       onChange={this.handleChange} field="startDateOfRide" row={i}/></td>
-                                            <td><input type="datetime-local" value={data.endDateOfRide}
-                                                       onChange={this.handleChange} field="endDateOfRide" row={i}/></td>
-                                            <td><input type="text" value={data.category} onChange={this.handleChange}
-                                                       field="category" row={i}/></td>
-                                            <td><input type="text" value={data.pickUpPoint} onChange={this.handleChange}
-                                                       field="pickUpPoint" row={i}/></td>
-                                            <td><input type="text" value={data.destination} onChange={this.handleChange}
-                                                       field="destination" row={i}/></td>
-                                            <td><input type="number" step={0.001} value={data.miles}
-                                                       onChange={this.handleChange} field="miles" row={i}/></td>
-                                            <td><input type="text" value={data.purpose} onChange={this.handleChange}
-                                                       field="purpose" row={i}/></td>
-                                            <td colSpan={2} className="round">
-                                                <button onClick={this.save} value={i}>Save</button>
-                                            </td>
-                                        </tr>
-                                    )
-                                }
+                <div>
+                    <table>
+                        <thead>
+                        <tr>
+                            {this.header.map((h, i) => <th key={i}>{h}</th>)}
+                            <th colSpan={2}>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            this.state.list.slice(beginIndex, endIndex).map((data, i) => {
+                                    if (!data.isEditing) {
+                                        return (
+                                            <tr key={i}>
+                                                <td>{data.startDateOfRide}</td>
+                                                <td>{data.endDateOfRide}</td>
+                                                <td>{data.category}</td>
+                                                <td>{data.pickUpPoint}</td>
+                                                <td>{data.destination}</td>
+                                                <td>{data.miles}</td>
+                                                <td>{data.purpose}</td>
+                                                <td className="round">
+                                                    <button onClick={this.edit} value={i}>Edit</button>
+                                                </td>
+                                                <td className="round">
+                                                    <button onClick={this.delete} value={i}>Delete</button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    } else {
+                                        return (
+                                            <tr key={i}>
+                                                <td><input type="datetime-local" value={data.startDateOfRide}
+                                                           onChange={this.handleChange} field="startDateOfRide" row={i}/>
+                                                </td>
+                                                <td><input type="datetime-local" value={data.endDateOfRide}
+                                                           onChange={this.handleChange} field="endDateOfRide" row={i}/></td>
+                                                <td><input type="text" value={data.category} onChange={this.handleChange}
+                                                           field="category" row={i}/></td>
+                                                <td><input type="text" value={data.pickUpPoint} onChange={this.handleChange}
+                                                           field="pickUpPoint" row={i}/></td>
+                                                <td><input type="text" value={data.destination} onChange={this.handleChange}
+                                                           field="destination" row={i}/></td>
+                                                <td><input type="number" step={0.001} value={data.miles}
+                                                           onChange={this.handleChange} field="miles" row={i}/></td>
+                                                <td><input type="text" value={data.purpose} onChange={this.handleChange}
+                                                           field="purpose" row={i}/></td>
+                                                <td colSpan={2} className="round">
+                                                    <button onClick={this.save} value={i}>Save</button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    }
 
-                            }
-                        )
-                    }
-                    </tbody>
-                </table>
+                                }
+                            )
+                        }
+                        </tbody>
+                    </table>
+
+                    <Pagination
+                        total={total}
+                        limit={limit}
+                        pageCount={10}
+                        currentPage={currentPage}>
+                        {({
+                              pages,
+                              currentPage,
+                              hasNextPage,
+                              hasPreviousPage,
+                              previousPage,
+                              nextPage,
+                              totalPages,
+                              getPageItemProps
+                          }) => (
+                            <div id="nav" className="pagination">
+                                <button
+                                    {...getPageItemProps({
+                                        pageValue: 1,
+                                        onPageChange: this.handlePageChange
+                                    })}
+                                >
+                                    first
+                                </button>
+
+                                {hasPreviousPage && (
+                                    <button
+                                        {...getPageItemProps({
+                                            pageValue: previousPage,
+                                            onPageChange: this.handlePageChange
+                                        })}
+                                    >
+                                        {'<'}
+                                    </button>
+                                )}
+
+                                {pages.map(page => {
+                                    let activePage = null;
+                                    if (currentPage === page) {
+                                        activePage = { backgroundColor: '#fdce09' };
+                                    }
+                                    return (
+                                        <button
+                                            {...getPageItemProps({
+                                                pageValue: page,
+                                                key: page,
+                                                style: activePage,
+                                                onPageChange: this.handlePageChange
+                                            })}
+                                        >
+                                            {page}
+                                        </button>
+                                    );
+                                })}
+
+                                {hasNextPage && (
+                                    <button
+                                        {...getPageItemProps({
+                                            pageValue: nextPage,
+                                            onPageChange: this.handlePageChange
+                                        })}
+                                    >
+                                        {'>'}
+                                    </button>
+                                )}
+
+                                <button
+                                    {...getPageItemProps({
+                                        pageValue: totalPages,
+                                        onPageChange: this.handlePageChange
+                                    })}
+                                >
+                                    last
+                                </button>
+                            </div>
+                        )}
+                    </Pagination>
+                </div>
             );
-        } else {
+        }
+        else {
             return <div></div>
         }
 

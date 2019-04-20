@@ -3,6 +3,14 @@ table, tr, td {
     text-align: center;
 }
 
+#nav > button {
+    font-size: 15px;
+}
+
+.pagination {
+    padding: 10px;
+}
+
 .round {
     border-radius: 10px;
 }
