@@ -134,9 +134,8 @@ public class UberRideDAOTest extends TestCase {
         mockResponse.setPickUpPoint(EXPECTED_STRING);
         mockResponse.setDestination(EXPECTED_STRING);
         mockResponse.setMiles(EXPECTED_DOUBLE);
-        mockResponse.setPurpose(EXPECTED_STRING);
+        mockResponse.setPurpose("New Purpose");
         UberRideDTO newDTO = new UberRideDTO(mockResponse);
-        newDTO.setPurpose("New Purpose");
         when(mockRepo.findByUuid(uuid)).thenReturn(mockResponse);
         when(mockRepo.save(Mockito.any())).thenReturn(mockResponse);
 

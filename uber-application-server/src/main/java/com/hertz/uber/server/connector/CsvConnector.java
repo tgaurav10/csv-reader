@@ -35,7 +35,7 @@ public class CsvConnector {
                     }
                     dao.saveUberRide(dto);
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         }

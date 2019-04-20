@@ -5,6 +5,7 @@ import com.hertz.uber.server.model.entity.UberRide;
 import com.hertz.uber.server.model.repository.UberRideRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +39,15 @@ public class UberRideDAO {
         return new UberRideDTO(ride);
     }
 
+    @Transactional
     public UberRideDTO editUberRide(String uuid, UberRideDTO dto) {
-        UberRide entity = repository.findByUuid(uuid);
-        populateEntityFromDTO(dto, entity);
         repository.deleteByUuid(uuid);
+        UberRide entity = new UberRide();
+        populateEntityFromDTO(dto, entity);
         return new UberRideDTO(repository.save(entity));
     }
 
+    @Transactional
     public void deleteUberRide(String uuid) {
         repository.deleteByUuid(uuid);
     }

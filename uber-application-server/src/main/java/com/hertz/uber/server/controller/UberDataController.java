@@ -22,6 +22,7 @@ public class UberDataController {
     @Autowired
     CsvConnector connector;
 
+    @CrossOrigin
     @GetMapping(path = "/job", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity get() {
         try {
@@ -35,6 +36,7 @@ public class UberDataController {
         }
     }
 
+    @CrossOrigin
     @PutMapping(path = "/job/{uuid}", consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity edit(@PathVariable("uuid") String uuid, @RequestBody UberRideDTO request) {
         UberRideDTO result = dao.editUberRide(uuid, request);
@@ -42,6 +44,7 @@ public class UberDataController {
 
     }
 
+    @CrossOrigin
     @DeleteMapping(path = "/job/{uuid}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity delete(@PathVariable("uuid") String uuid) {
         dao.deleteUberRide(uuid);

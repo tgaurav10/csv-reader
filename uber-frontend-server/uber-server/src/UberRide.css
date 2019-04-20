@@ -1,0 +1,8 @@
+table, tr, td {
+    border: 1px solid darkgrey;
+    text-align: center;
+}
+
+.round {
+    border-radius: 10px;
+}

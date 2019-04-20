@@ -30,9 +30,10 @@ public class UberRideDTO {
     public UberRideDTO(List<String> row) throws ParseException {
         StringBuilder sb = new StringBuilder("");
         for(String s : row) {
-            sb.append(s);
+            s = s.replaceAll("/", "-");
+            sb.append(s + " ");
         }
-        uuid = sb.toString();
+        uuid = sb.toString().trim();
         startDateOfRide = sdf.parse(row.get(0));
         endDateOfRide = sdf.parse(row.get(1));
         category = Category.valueOf(row.get(2).toUpperCase());
